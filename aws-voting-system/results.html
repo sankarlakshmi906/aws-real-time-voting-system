@@ -1,0 +1,366 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Results</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            color: white;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        nav h2 {
+            color: #ffd166;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #ffd166;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 50px 20px 30px;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: #d9e2f0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .total-card {
+            background: white;
+            color: #222;
+            border-radius: 15px;
+            text-align: center;
+            padding: 28px;
+            margin-bottom: 25px;
+        }
+
+        .total-card p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .total-card h2 {
+            color: #6c3ce9;
+            font-size: 42px;
+        }
+
+        .result-card {
+            background: white;
+            color: #222;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .result-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .result-heading h3 {
+            font-size: 21px;
+        }
+
+        .count {
+            color: #555;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .progress-background {
+            height: 16px;
+            width: 100%;
+            background: #e9e9e9;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            border-radius: 20px;
+            transition: width 0.7s ease;
+        }
+
+        .a-progress {
+            background: #0878c9;
+        }
+
+        .b-progress {
+            background: #e53935;
+        }
+
+        .c-progress {
+            background: #239b56;
+        }
+
+        .percentage {
+            text-align: right;
+            color: #555;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .actions {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        button {
+            padding: 13px 25px;
+            background: #6c3ce9;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #5125bf;
+        }
+
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        #status {
+            margin-top: 15px;
+            text-align: center;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .notice {
+            text-align: center;
+            color: #d9e2f0;
+            padding: 10px 20px 30px;
+            font-size: 13px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 22px;
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav a {
+                margin: 0 8px;
+            }
+
+            .hero h1 {
+                font-size: 29px;
+            }
+
+            .result-heading h3 {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <h2>AWS Voting System</h2>
+        <div>
+            <a href="index.html">Home</a>
+            <a href="index.html#vote">Cast Vote</a>
+            <a href="results.html">Results</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Voting Results</h1>
+        <p>See how many votes each option has received.</p>
+    </section>
+
+    <main class="container">
+
+        <section class="total-card">
+            <p>Total Votes Recorded</p>
+            <h2 id="totalVotes">--</h2>
+        </section>
+
+        <section class="result-card">
+            <div class="result-heading">
+                <h3>Option A</h3>
+                <span class="count" id="aCount">0 votes</span>
+            </div>
+
+            <div class="progress-background">
+                <div class="progress a-progress" id="aBar"></div>
+            </div>
+
+            <p class="percentage" id="aPercent">0%</p>
+        </section>
+
+        <section class="result-card">
+            <div class="result-heading">
+                <h3>Option B</h3>
+                <span class="count" id="bCount">0 votes</span>
+            </div>
+
+            <div class="progress-background">
+                <div class="progress b-progress" id="bBar"></div>
+            </div>
+
+            <p class="percentage" id="bPercent">0%</p>
+        </section>
+
+        <section class="result-card">
+            <div class="result-heading">
+                <h3>Option C</h3>
+                <span class="count" id="cCount">0 votes</span>
+            </div>
+
+            <div class="progress-background">
+                <div class="progress c-progress" id="cBar"></div>
+            </div>
+
+            <p class="percentage" id="cPercent">0%</p>
+        </section>
+
+        <div class="actions">
+            <button id="refreshButton" onclick="loadResults()">
+                Refresh Results
+            </button>
+
+            <p id="status" role="status"></p>
+        </div>
+
+    </main>
+
+    <p class="notice">
+        Educational demonstration only. Results are retrieved from AWS.
+    </p>
+
+    <footer>
+        AWS Real-Time Voting System | Lambda + API Gateway + DynamoDB
+    </footer>
+
+    <script>
+        const RESULTS_URL =
+            "https://nx2wr0d2wk.execute-api.us-east-1.amazonaws.com/prod/results";
+
+        async function loadResults() {
+            const status = document.getElementById("status");
+            const refreshButton = document.getElementById("refreshButton");
+
+            refreshButton.disabled = true;
+            status.style.color = "#ffffff";
+            status.textContent = "Loading results from AWS...";
+
+            try {
+                const response = await fetch(RESULTS_URL, {
+                    method: "GET"
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Unable to retrieve results."
+                    );
+                }
+
+                const results = data.results || {};
+
+                const optionA = Number(results.OptionA || 0);
+                const optionB = Number(results.OptionB || 0);
+                const optionC = Number(results.OptionC || 0);
+
+                const total =
+                    optionA + optionB + optionC;
+
+                document.getElementById("totalVotes").textContent =
+                    total;
+
+                updateOption("a", optionA, total);
+                updateOption("b", optionB, total);
+                updateOption("c", optionC, total);
+
+                status.style.color = "#a8ffbf";
+                status.textContent =
+                    "Results loaded successfully from AWS.";
+
+            } catch (error) {
+                status.style.color = "#ffb3b3";
+                status.textContent =
+                    "Unable to load results: " + error.message;
+            } finally {
+                refreshButton.disabled = false;
+            }
+        }
+
+        function updateOption(option, votes, total) {
+            const percentage = total > 0
+                ? (votes / total) * 100
+                : 0;
+
+            document.getElementById(option + "Count").textContent =
+                votes + (votes === 1 ? " vote" : " votes");
+
+            document.getElementById(option + "Bar").style.width =
+                percentage + "%";
+
+            document.getElementById(option + "Percent").textContent =
+                percentage.toFixed(1) + "%";
+        }
+
+        loadResults();
+    </script>
+
+</body>
+</html>
+```

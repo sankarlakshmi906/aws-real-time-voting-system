@@ -1,0 +1,379 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Online Voting System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #141e30, #243b55);
+            color: white;
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        nav h2 {
+            color: #ffd166;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #ffd166;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 55px 20px 35px;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: #d9e2f0;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .party-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .party-card {
+            background: white;
+            color: #222;
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            border: 4px solid transparent;
+            transition: 0.3s;
+        }
+
+        .party-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .party-card.selected {
+            border-color: #ffd166;
+            transform: translateY(-5px);
+        }
+
+        .symbol {
+            width: 85px;
+            height: 85px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .option-a .symbol {
+            background: #0878c9;
+        }
+
+        .option-b .symbol {
+            background: #e53935;
+        }
+
+        .option-c .symbol {
+            background: #239b56;
+        }
+
+        .party-card h2 {
+            margin-bottom: 12px;
+        }
+
+        .party-card p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .vote-section {
+            background: white;
+            color: #222;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 16px;
+        }
+
+        .vote-section h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #6c3ce9;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #5125bf;
+        }
+
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 18px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .notice {
+            text-align: center;
+            color: #d9e2f0;
+            padding: 10px 20px 30px;
+            font-size: 13px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 22px;
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav a {
+                margin: 0 8px;
+            }
+
+            .hero h1 {
+                font-size: 29px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <h2>AWS Voting System</h2>
+        <div>
+            <a href="index.html">Home</a>
+            <a href="#vote">Cast Vote</a>
+            <a href="results.html">Results</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Online Voting System</h1>
+        <p>
+            Welcome to the AWS-powered voting demonstration.<br>
+            Select one of the three options and submit your vote.
+        </p>
+    </section>
+
+    <main class="container">
+
+        <div class="party-grid">
+
+            <div class="party-card option-a" data-option="OptionA">
+                <div class="symbol">A</div>
+                <h2>Option A</h2>
+                <p>First voting option</p>
+            </div>
+
+            <div class="party-card option-b" data-option="OptionB">
+                <div class="symbol">B</div>
+                <h2>Option B</h2>
+                <p>Second voting option</p>
+            </div>
+
+            <div class="party-card option-c" data-option="OptionC">
+                <div class="symbol">C</div>
+                <h2>Option C</h2>
+                <p>Third voting option</p>
+            </div>
+
+        </div>
+
+        <section class="vote-section" id="vote">
+            <h2>Cast Your Vote</h2>
+
+            <form id="voteForm">
+                <label for="voteOption">Choose an option</label>
+
+                <select id="voteOption" required>
+                    <option value="">-- Select an option --</option>
+                    <option value="OptionA">Option A</option>
+                    <option value="OptionB">Option B</option>
+                    <option value="OptionC">Option C</option>
+                </select>
+
+                <button type="submit" id="voteButton">
+                    Submit Vote
+                </button>
+            </form>
+
+            <p id="message" role="status"></p>
+        </section>
+
+    </main>
+
+    <p class="notice">
+        Educational demonstration only. This is not an official election system.
+    </p>
+
+    <footer>
+        AWS Real-Time Voting System | Lambda + API Gateway + DynamoDB
+    </footer>
+
+    <script>
+        const API_URL =
+            "https://nx2wr0d2wk.execute-api.us-east-1.amazonaws.com/prod";
+
+        const cards = document.querySelectorAll(".party-card");
+        const voteOption = document.getElementById("voteOption");
+        const voteForm = document.getElementById("voteForm");
+        const voteButton = document.getElementById("voteButton");
+        const message = document.getElementById("message");
+
+        cards.forEach(function(card) {
+            card.addEventListener("click", function() {
+                cards.forEach(function(item) {
+                    item.classList.remove("selected");
+                });
+
+                card.classList.add("selected");
+                voteOption.value = card.dataset.option;
+
+                document.getElementById("vote").scrollIntoView({
+                    behavior: "smooth"
+                });
+            });
+        });
+
+        voteOption.addEventListener("change", function() {
+            cards.forEach(function(card) {
+                card.classList.toggle(
+                    "selected",
+                    card.dataset.option === voteOption.value
+                );
+            });
+        });
+
+        voteForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            if (!voteOption.value) {
+                message.style.color = "red";
+                message.textContent = "Please select an option.";
+                return;
+            }
+
+            voteButton.disabled = true;
+            voteButton.textContent = "Submitting...";
+            message.style.color = "#333";
+            message.textContent = "Submitting your vote...";
+
+            try {
+                const response = await fetch(API_URL + "/vote", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        voteOption: voteOption.value
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Unable to submit vote."
+                    );
+                }
+
+                message.style.color = "green";
+                message.textContent =
+                    "Vote recorded successfully! Vote ID: " +
+                    (data.voteId || "Not returned");
+
+                voteForm.reset();
+
+                cards.forEach(function(card) {
+                    card.classList.remove("selected");
+                });
+
+            } catch (error) {
+                message.style.color = "red";
+                message.textContent =
+                    "Error: " + error.message;
+            } finally {
+                voteButton.disabled = false;
+                voteButton.textContent = "Submit Vote";
+            }
+        });
+    </script>
+
+</body>
+</html>
+```
